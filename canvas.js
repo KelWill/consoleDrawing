@@ -3,13 +3,21 @@ $(document).ready(function () {
     var pixSize = 8, lastPoint = null, currentColor = "000", mouseDown = 0;
 
     //Create a reference to the pixel data for our drawing.
-    var pixelDataRef = new Firebase('https://consoledrawing.firebaseio.com/');
+    // var pixelDataRef = new Firebase('https://consoledrawing.firebaseio.com/');
+    var pixelDataRef = [];
+    for (var i = 0; i < 60; i++){
+      var inner = [];
+      for (var j = 0; j < 52; j++){
+        inner.push(0);
+      }
+      pixelDataRef.push(inner);
+    }
 
     // Set up our canvas
     var myCanvas = document.getElementById('drawing-canvas');
     var myContext = myCanvas.getContext ? myCanvas.getContext('2d') : null;
     if (myContext == null) {
-      alert("You must use a browser that supports HTML5 Canvas to run this demo.");
+      alert("You must use a browser that supports HTML5 Canvas for this to work");
       return;
     }
 
@@ -49,7 +57,14 @@ $(document).ready(function () {
       var sx = (x0 < x1) ? 1 : -1, sy = (y0 < y1) ? 1 : -1, err = dx - dy;
       while (true) {
         //write the pixel into Firebase, or if we are drawing white, remove the pixel
-        pixelDataRef.child(x0 + ":" + y0).set(currentColor === "fff" ? null : currentColor);
+        
+        // pixelDataRef.child(x0 + ":" + y0).set(currentColor === "fff" ? null : currentColor);
+        pixelDataRef[x0][y0] = (currentColor ==="fff" ? 0 : 1);
+        if (currentColor === '000'){
+          drawPixel(x0, y0);
+        } else {
+         clearPixel(x0, y0);
+        }
 
         if (x0 == x1 && y0 == y1) break;
         var e2 = 2 * err;
@@ -69,16 +84,18 @@ $(document).ready(function () {
 
     // Add callbacks that are fired any time the pixel data changes and adjusts the canvas appropriately.
     // Note that child_added events will be fired for initial pixel data as well.
-    var drawPixel = function(snapshot) {
-      var coords = snapshot.name().split(":");
-      myContext.fillStyle = "#" + snapshot.val();
-      myContext.fillRect(parseInt(coords[0]) * pixSize, parseInt(coords[1]) * pixSize, pixSize, pixSize);
+    var drawPixel = function(x, y) {
+      myContext.fillStyle = "#000";
+      
+      // var coords = snapshot.name().split(":");
+      // myContext.fillStyle = "#" + snapshot.val();
+      myContext.fillRect(parseInt(x) * pixSize, parseInt(y) * pixSize, pixSize, pixSize);
     };
-    var clearPixel = function(snapshot) {
-      var coords = snapshot.name().split(":");
-      myContext.clearRect(parseInt(coords[0]) * pixSize, parseInt(coords[1]) * pixSize, pixSize, pixSize);
+    var clearPixel = function(x, y) {
+      // var coords = snapshot.name().split(":");
+      myContext.clearRect(parseInt(x) * pixSize, parseInt(y) * pixSize, pixSize, pixSize);
     };
-    pixelDataRef.on('child_added', drawPixel);
-    pixelDataRef.on('child_changed', drawPixel);
-    pixelDataRef.on('child_removed', clearPixel);
+    // pixelDataRef.on('child_added', drawPixel);
+    // pixelDataRef.on('child_changed', drawPixel);
+    // pixelDataRef.on('child_removed', clearPixel);
   });
