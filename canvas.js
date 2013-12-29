@@ -5,7 +5,7 @@ $(document).ready(function () {
     var pixelDataRef = [];
     for (var i = 0; i < 60; i++){
       var inner = [];
-      for (var j = 0; j < 52; j++){
+      for (var j = 0; j < 60; j++){
         inner.push(0);
       }
       pixelDataRef.push(inner);
@@ -95,6 +95,7 @@ $(document).ready(function () {
     };
 
     $('#change').on('click', function(){
+     console.log(pixelDataRef);
       var results= turnIntoConsoleLog(pixelDataRef);
       for (var i = 0; i < results.length; i++){
         console.log('%c' + results[i], 'font-family: Courier');
