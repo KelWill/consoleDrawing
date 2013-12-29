@@ -2,8 +2,6 @@ $(document).ready(function () {
     //Set up some globals
     var pixSize = 8, lastPoint = null, currentColor = "000", mouseDown = 0;
 
-    //Create a reference to the pixel data for our drawing.
-    // var pixelDataRef = new Firebase('https://consoledrawing.firebaseio.com/');
     var pixelDataRef = [];
     for (var i = 0; i < 60; i++){
       var inner = [];
@@ -95,7 +93,47 @@ $(document).ready(function () {
       // var coords = snapshot.name().split(":");
       myContext.clearRect(parseInt(x) * pixSize, parseInt(y) * pixSize, pixSize, pixSize);
     };
-    // pixelDataRef.on('child_added', drawPixel);
-    // pixelDataRef.on('child_changed', drawPixel);
-    // pixelDataRef.on('child_removed', clearPixel);
+
+    $('#change').on('click', function(){
+      var results= turnIntoConsoleLog(pixelDataRef);
+      for (var i = 0; i < results.length; i++){
+        console.log('%c' + results[i], 'font-family: Courier');
+      }
+    });
+
+    var turnIntoConsoleLog = function(imgArray){
+      var results = [];
+      for (var j = 0; j < imgArray.length; j+=2){
+        var line = '';
+        for (var i = 0; i < imgArray[j].length; i+=2){
+          var array = [[imgArray[i][j], imgArray[i+1][j]], [imgArray[i+1][j], imgArray[i+1][j+1]] ];
+          line+=turnArrayIntoText(array);
+        }
+        results.push(line);
+      }
+      return results;
+    };
+
+    turnArrayIntoText = function(array){
+      return pictures[array.toString()];
+    };
+
+    var pictures = {
+      '1,0,0,0': '\'',
+      '0,1,0,0': '\'',
+      '1,1,0,0': '^',
+      '1,1,1,0': 'P',
+      '1,1,1,1': 'X',
+      '0,1,0,0': '^',
+      '0,1,1,0': '|',
+      '0,1,1,1': 'd',
+      '0,0,1,0': '.',
+      '0,0,1,1': '_',
+      '0,0,0,1': '.',
+      '1,0,0,1': '\\',
+      '0,1,0,1': '/',
+      '1,1,0,1': 'b',
+      '1,1,0,1': '7',
+      '0,0,0,0' : ' '
+    };
   });
