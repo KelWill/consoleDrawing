@@ -57,7 +57,7 @@ $(document).ready(function () {
         //write the pixel into Firebase, or if we are drawing white, remove the pixel
         
         // pixelDataRef.child(x0 + ":" + y0).set(currentColor === "fff" ? null : currentColor);
-        pixelDataRef[x0][y0] = (currentColor ==="fff" ? 0 : 1);
+        pixelDataRef[y0][x0] = (currentColor ==="fff" ? 0 : 1);
         if (currentColor === '000'){
           drawPixel(x0, y0);
         } else {
@@ -103,9 +103,9 @@ $(document).ready(function () {
 
     var turnIntoConsoleLog = function(imgArray){
       var results = [];
-      for (var j = 0; j < imgArray.length; j+=2){
+      for (var i = 0; i < imgArray.length; i+=2){
         var line = '';
-        for (var i = 0; i < imgArray[j].length; i+=2){
+        for (var j = 0; j < imgArray[i].length; j+=2){
           var array = [[imgArray[i][j], imgArray[i+1][j]], [imgArray[i+1][j], imgArray[i+1][j+1]] ];
           line+=turnArrayIntoText(array);
         }
